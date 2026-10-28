@@ -21,25 +21,30 @@ st.set_page_config(
     layout="wide"
 )
 
+```python
 # ---------------- LOAD FILES ----------------
+
+FEATURE_COLUMNS = [
+    "Air temperature [K]",
+    "Process temperature [K]",
+    "Rotational speed [rpm]",
+    "Torque [Nm]",
+    "Tool wear [min]"
+]
 
 @st.cache_resource
 def load_models():
-    logistic = joblib.load("logistic_regression_model.pkl")
-    forest = joblib.load("random_forest_model.pkl")
-    features = joblib.load("feature_columns.pkl")
-    return logistic, forest, features
+    logistic = joblib.load("logistic_regression_pipeline.joblib")
+    forest = joblib.load("random_forest_pipeline.joblib")
+    best_model = joblib.load("best_model.joblib")
 
-@st.cache_data
-def load_dataset():
-    return pd.read_csv("prepared_predictive_maintenance.csv")
+    with open("best_model_name.txt", "r") as file:
+        best_model_name = file.read().strip()
 
-try:
-    logistic_model, forest_model, feature_columns = load_models()
-    df = load_dataset()
-except Exception as e:
-    st.error(f"Unable to load project files: {e}")
-    st.stop()
+    return logistic, forest, best_model, best_model_name
+```
+
+
 
 # ---------------- SIDEBAR ----------------
 
